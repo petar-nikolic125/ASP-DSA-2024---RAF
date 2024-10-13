@@ -1,0 +1,85 @@
+#include <iostream>
+
+typedef struct Element {
+  int data;
+  Element *next;
+} Element;
+
+Element *addElement(int data) {
+  Element *newElement = new Element;
+  newElement->data = data;
+  newElement->next = nullptr;
+  return newElement;
+}
+Element *addOnEnd(Element *list, Element *newElement) {
+  if (list == nullptr) {
+    return newElement;
+  }
+  Element *temp = list;
+  while (temp->next != nullptr) {
+    temp = temp->next;
+  }
+  temp->next = newElement;
+  return list;
+}
+
+Element *rotateKtimes(Element *list, int k) {
+  if (list == nullptr) {
+    return list;
+  }
+  Element *temp = list;
+  int counter = 1;
+  while (temp->next != nullptr) {
+    temp = temp->next;
+    counter++;
+  }
+  temp->next = list;
+  int newTail = counter - (k % counter);
+  for (int i = 0; i < newTail; i++) {
+    temp = temp->next;
+  }
+  list = temp->next;
+  temp->next = nullptr;
+  return list;
+}
+
+void writeList(Element *list) {
+  while (list != nullptr) {
+    std::cout << list->data << " -> ";
+    list = list->next;
+  }
+  std::cout << "null" << "\n";
+}
+
+void deletelist(Element *list) {
+  while (list != nullptr) {
+    Element *next = list->next;
+    delete (list);
+    list = next;
+  }
+  std::cout << "list deleted\n";
+}
+
+using namespace std;
+
+// made changessss
+int main() {
+  Element *list = nullptr;
+  int data, k;
+  while (true) {
+    cout << "insert node: \n";
+    cin >> data;
+    if (data == 0) {
+      break;
+    }
+    list = addOnEnd(list, addElement(data));
+  }
+  writeList(list);
+  cout << "insert K!\n";
+  cin >> k;
+  list = rotateKtimes(list, k);
+  writeList(list);
+  deletelist(list);
+
+  return 0;
+}
