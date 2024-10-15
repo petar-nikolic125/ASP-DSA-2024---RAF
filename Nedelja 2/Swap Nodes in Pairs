@@ -64,20 +64,23 @@ void deletelist(Element* list) {
 }
 
 Element* swapInPairs(Element* head) {
-    Element* prev = nullptr;
+    if(head == nullptr || head -> next == nullptr) {
+        return head;
+    }
     Element* curr = head;
-    Element* heirHead = head -> next;
-    while(curr != nullptr) {
-        Element* next = curr -> next;
-        curr -> next = next -> next;
-        next -> next = curr;
-        if(prev != nullptr) {
-            prev -> next = next;
-        }
+    Element* dummy = new Element;
+    Element* prev = dummy;
+    while(curr != nullptr && curr -> next != nullptr) {
+        prev -> next = curr -> next;
+        curr -> next = prev -> next -> next;
+        prev -> next -> next = curr;
+
         prev = curr;
         curr = curr -> next;
     }
-return heirHead;
+    Element* result = dummy -> next;
+    delete(dummy);
+    return  result;
 }
 
 using namespace std;
