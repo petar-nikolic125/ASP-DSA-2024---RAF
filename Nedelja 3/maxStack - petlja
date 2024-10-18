@@ -1,0 +1,91 @@
+#include <iostream>
+using namespace std;
+
+class Stack {
+private:
+    int* elementPointer;
+    int maxElements;
+    int topIndex;
+
+public:
+    Stack(int size) {
+        maxElements = size;
+        elementPointer = new int[size];
+        topIndex = -1;
+    }
+
+    ~Stack() {
+        delete[] elementPointer;
+    }
+
+    void push(int value) {
+        if (topIndex < maxElements - 1) {
+            elementPointer[++topIndex] = value;
+        } else {
+        }
+    }
+
+    void pop() {
+        if (topIndex > -1) {
+            topIndex--;
+        } else {
+        }
+    }
+
+    int top() {
+        if (topIndex == -1) {
+            return -1;
+        }
+        return elementPointer[topIndex];
+    }
+
+    int max() {
+        if (topIndex == -1) {
+            return -1;
+        }
+        int maxVal = elementPointer[0];
+        for (int i = 1; i <= topIndex; i++) {
+            if (elementPointer[i] > maxVal) {
+                maxVal = elementPointer[i];
+            }
+        }
+        return maxVal;
+    }
+};
+
+int main() {
+    int Q;
+    cin >> Q;
+
+    Stack st(Q); // Initialize stack with size Q
+    for (int i = 0; i < Q; i++) {
+        int operation;
+        cin >> operation;
+
+        switch (operation) {
+            case 1: {
+                int value;
+                cin >> value;
+                st.push(value);
+                break;
+            }
+            case 2: {
+                st.pop();
+                break;
+            }
+            case 3: {
+                cout << st.top() << endl;
+                break;
+            }
+            case 4: {
+                cout << st.max() << endl;
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+    }
+
+    return 0;
+}
