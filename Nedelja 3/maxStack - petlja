@@ -51,6 +51,23 @@ public:
         }
         return maxVal;
     }
+
+       void RemoveElement(int element) {
+        Stack tempStack(maxElements);
+        while(topIndex != -1) {
+            int topElement = top();
+            pop();
+
+            if(topElement != element){
+                tempStack.push(topElement);
+            }
+        }
+        while(tempStack.topIndex != -1) {
+            push(tempStack.top());
+            tempStack.pop();
+        }
+};
+
 };
 
 int main() {
