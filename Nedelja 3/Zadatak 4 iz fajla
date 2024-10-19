@@ -1,0 +1,51 @@
+#include <iostream>
+#include <stack>
+#include <vector>
+
+using namespace std;
+
+void findNextTallerBuildings(const vector<int>& heights, vector<int>& result) {
+    int n = heights.size();
+    stack<int> indexStack;
+
+    for (int i = n - 1; i >= 0; --i) {
+        // Pop all shorter buildings from the stack
+        while (!indexStack.empty() && heights[i] >= heights[indexStack.top()]) {
+            indexStack.pop();
+        }
+
+        // If the stack is not empty, the top of the stack is the next taller building
+        if (indexStack.empty()) {
+            result[i] = -1; // No taller building to the right
+        } else {
+            result[i] = heights[indexStack.top()]; // Store the height of the next taller building
+        }
+
+        // Push the current building index onto the stack
+        indexStack.push(i);
+    }
+}
+
+int main() {
+    int numberOfBuildings;
+    
+    // Ensure valid input for number of buildings
+    cin >> numberOfBuildings;
+    if (numberOfBuildings <= 0) {
+        return 0; // Exit early if no buildings or invalid input
+    }
+
+    vector<int> heights(numberOfBuildings);
+    vector<int> result(numberOfBuildings, -1);
+
+    // Input heights of the buildings
+    for (int i = 0; i < numberOfBuildings; ++i) {
+        cin >> heights[i];
+    }
+
+    // Call the function to process the heights
+    findNextTallerBuildings(heights, result);
+
+    // The result array now contains the heights of the next taller buildings
+    // Or -1 where there is no taller building
+}
