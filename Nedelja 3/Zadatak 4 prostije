@@ -1,0 +1,39 @@
+#include <iostream>
+#include <stack>
+#include <vector>
+
+using namespace std;
+
+void findNextTallerBuildings(const vector<int>& heights) {
+   int n = heights.size();
+    vector<int> result(n, -1);
+    stack<int> sizes;
+
+    for(int i = n - 1; i >= 0; i--) {
+        while(!sizes.empty() && heights[i] > sizes.top()) {
+            sizes.pop();
+        }
+        if(!sizes.empty()) {
+            result[i] = sizes.top();
+        }
+        else {
+            result[i] = -1;
+        }
+        sizes.push(heights[i]);
+    }
+    for(const int r: result) {
+        if(r == -1) {
+            cout << " - ";
+        }
+        else cout << " " << r << " ";
+    }
+    //imamo stek sa vrednostima, u noj pisemo vrednosti od trenuthin
+    //ako je trenutna vrednost veca od one na steku popujemo je iz steka, ako je stek prazan printamo '-'
+    //na kraju iteracije dodajemo trenutnu vrednost u stek;
+}
+
+int main() {
+    vector<int> heights = {1, 3, 3, 5, 4, 2, 6, 1, 2};
+    findNextTallerBuildings(heights);
+    return 0;
+}
