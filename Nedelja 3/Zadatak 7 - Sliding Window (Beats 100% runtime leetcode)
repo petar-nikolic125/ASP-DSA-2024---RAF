@@ -1,0 +1,27 @@
+#include <climits>
+
+using namespace std;
+
+class Solution {
+public:
+    int minSubArrayLen(int target, vector<int>& nums) {
+        int R;
+        int L = 0;
+        int minArray = INT_MAX;
+        int sum = 0;
+        for(R = 0; R < nums.size(); R++) {
+           sum += nums[R];
+            while(sum >= target) {
+                 if(R - L + 1 < minArray) {
+                     minArray = R - L + 1;
+                 }
+                sum -= nums[L];
+                L += 1;
+            }
+        }
+        if(minArray == INT_MAX) {
+            return 0;
+        }
+        return minArray;
+    }
+};
