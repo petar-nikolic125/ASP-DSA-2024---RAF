@@ -1,0 +1,131 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int* a;
+    int* b;
+    int size_a, size_b;
+    int capacity_a, capacity_b;
+} FrontMiddleBackQueue;
+
+void initQueue(FrontMiddleBackQueue* q) {
+    q->capacity_a = q->capacity_b = 2;
+    q->size_a = q->size_b = 0;
+    q->a = (int*)malloc(q->capacity_a * sizeof(int));
+    q->b = (int*)malloc(q->capacity_b * sizeof(int));
+}
+
+void resizeArray(int** arr, int* capacity) {
+    *capacity *= 2;
+    *arr = (int*)realloc(*arr, (*capacity) * sizeof(int));
+}
+
+void a2b(FrontMiddleBackQueue* q) {
+    if (q->size_a <= q->size_b) return;
+    if (q->size_b == q->capacity_b) resizeArray(&(q->b), &(q->capacity_b));
+    for (int i = q->size_b; i > 0; i--) {
+        q->b[i] = q->b[i - 1];
+    }
+    q->b[0] = q->a[q->size_a - 1];
+    q->size_b++;
+    q->size_a--;
+}
+
+void b2a(FrontMiddleBackQueue* q) {
+    if (q->size_b <= q->size_a + 1) return;
+    if (q->size_a == q->capacity_a) resizeArray(&(q->a), &(q->capacity_a));
+    q->a[q->size_a] = q->b[0];
+    q->size_a++;
+    for (int i = 0; i < q->size_b - 1; i++) {
+        q->b[i] = q->b[i + 1];
+    }
+    q->size_b--;
+}
+
+void pushFront(FrontMiddleBackQueue* q, int val) {
+    if (q->size_a == q->capacity_a) resizeArray(&(q->a), &(q->capacity_a));
+    for (int i = q->size_a; i > 0; i--) {
+        q->a[i] = q->a[i - 1];
+    }
+    q->a[0] = val;
+    q->size_a++;
+    a2b(q);
+}
+
+void pushMiddle(FrontMiddleBackQueue* q, int val) {
+    if (q->size_a == q->capacity_a) resizeArray(&(q->a), &(q->capacity_a));
+    q->a[q->size_a] = val;
+    q->size_a++;
+    a2b(q);
+}
+
+void pushBack(FrontMiddleBackQueue* q, int val) {
+    if (q->size_b == q->capacity_b) resizeArray(&(q->b), &(q->capacity_b));
+    q->b[q->size_b] = val;
+    q->size_b++;
+    b2a(q);
+}
+
+int popFront(FrontMiddleBackQueue* q) {
+    if (q->size_a == 0 && q->size_b == 0) return -1;
+    int ans;
+    if (q->size_a == 0) {
+        ans = q->b[0];
+        for (int i = 0; i < q->size_b - 1; i++) {
+            q->b[i] = q->b[i + 1];
+        }
+        q->size_b--;
+    } else {
+        ans = q->a[0];
+        for (int i = 0; i < q->size_a - 1; i++) {
+            q->a[i] = q->a[i + 1];
+        }
+        q->size_a--;
+        b2a(q);
+    }
+    return ans;
+}
+
+int popMiddle(FrontMiddleBackQueue* q) {
+    if (q->size_a == 0 && q->size_b == 0) return -1;
+    int ans;
+    if (q->size_a == q->size_b) {
+        ans = q->a[q->size_a - 1];
+        q->size_a--;
+    } else {
+        ans = q->b[0];
+        for (int i = 0; i < q->size_b - 1; i++) {
+            q->b[i] = q->b[i + 1];
+        }
+        q->size_b--;
+    }
+    return ans;
+}
+
+int popBack(FrontMiddleBackQueue* q) {
+    if (q->size_a == 0 && q->size_b == 0) return -1;
+    int ans = q->b[q->size_b - 1];
+    q->size_b--;
+    a2b(q);
+    return ans;
+}
+
+int main() {
+    FrontMiddleBackQueue q;
+    initQueue(&q);
+    
+    pushFront(&q, 1);
+    pushBack(&q, 2);
+    pushMiddle(&q, 3);
+    pushMiddle(&q, 4);
+    
+    printf("%d\n", popFront());   // 1
+    printf("%d\n", popMiddle());  // 3
+    printf("%d\n", popMiddle());  // 4
+    printf("%d\n", popBack());    // 2
+    
+    free(q.a);
+    free(q.b);
+    
+    return 0;
+}
