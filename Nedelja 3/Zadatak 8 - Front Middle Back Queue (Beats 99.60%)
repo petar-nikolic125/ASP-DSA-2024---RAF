@@ -1,0 +1,69 @@
+class FrontMiddleBackQueue {
+    vector<int> a, b;
+    
+    // Balansira tako da veličine a i b budu u skladu
+    void a2b() {
+        if (a.size() <= b.size()) return;
+        b.insert(b.begin(), a.back());  // Ubacuje element na početak b
+        a.pop_back();  // Uklanja poslednji element iz a
+    }
+    
+    void b2a() {
+        if (b.size() <= a.size() + 1) return;
+        a.push_back(b.front());  // Dodaje prvi element b na kraj a
+        b.erase(b.begin());  // Briše prvi element iz b
+    }
+
+public:
+    FrontMiddleBackQueue() {}
+
+    void pushFront(int val) {
+        a.insert(a.begin(), val);  // Dodaje na početak a
+        a2b();
+    }
+
+    void pushMiddle(int val) {
+        a.push_back(val);  // Dodaje na kraj a
+        a2b();
+    }
+
+    void pushBack(int val) {
+        b.push_back(val);  // Dodaje na kraj b
+        b2a();
+    }
+
+    int popFront() {
+        if (a.empty() && b.empty()) return -1;
+        int ans;
+        if (a.empty()) {
+            ans = b.front();
+            b.erase(b.begin());
+        } else {
+            ans = a.front();
+            a.erase(a.begin());
+            b2a();
+        }
+        return ans;
+    }
+
+    int popMiddle() {
+        if (a.empty() && b.empty()) return -1;
+        int ans;
+        if (a.size() == b.size()) {
+            ans = a.back();
+            a.pop_back();
+        } else {
+            ans = b.front();
+            b.erase(b.begin());
+        }
+        return ans;
+    }
+
+    int popBack() {
+        if (a.empty() && b.empty()) return -1;
+        int ans = b.back();
+        b.pop_back();
+        a2b();
+        return ans;
+    }
+};
