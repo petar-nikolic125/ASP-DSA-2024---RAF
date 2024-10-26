@@ -1,0 +1,17 @@
+class Solution {
+public:
+bool isValidBST(TreeNode* node, long min_bound = LONG_MIN, long max_bound = LONG_MAX) {
+        if (!node) return true;  
+
+    
+        if (node->val <= min_bound || node->val >= max_bound) return false;
+
+    
+        bool left_is_valid = isValidBST(node->left, min_bound, node->val);
+
+    
+        bool right_is_valid = isValidBST(node->right, node->val, max_bound);
+
+        return left_is_valid && right_is_valid;  
+    }
+};
