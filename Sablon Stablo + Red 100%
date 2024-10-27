@@ -1,0 +1,180 @@
+#include <iostream>
+using namespace std;
+
+// Ovaj program implementira binarno stablo i red (queue) u C++.
+// Omogućava korisniku da unese čvorove za konstrukciju binarnog stabla i ispiše stablo na ekranu.
+
+// Struktura za čvor binarnog stabla
+struct TreeNode {
+    int val;            // Vrednost čvora
+    TreeNode* left;     // Pokazivač na levo dete
+    TreeNode* right;    // Pokazivač na desno dete
+
+    // Podrazumevani konstruktor
+    TreeNode() {
+        val = 0;
+        left = nullptr;
+        right = nullptr;
+    }
+
+    // Konstruktor sa vrednošću
+    TreeNode(int x) {
+        val = x;
+        left = nullptr;
+        right = nullptr;
+    }
+
+    // Konstruktor sa vrednošću i pokazivačima na decu
+    TreeNode(int x, TreeNode* leftChild, TreeNode* rightChild) {
+        val = x;
+        left = leftChild;
+        right = rightChild;
+    }
+};
+
+// Struktura za čvor reda
+struct QueueNode {
+    TreeNode* treeNode; // Pokazivač na čvor stabla
+    QueueNode* next;    // Pokazivač na sledeći čvor u redu
+
+    // Konstruktor za QueueNode
+    QueueNode(TreeNode* t) {
+        treeNode = t;
+        next = nullptr;
+    }
+};
+
+// Klasa za red (queue) implementiran pomoću jednostruko povezanih čvorova
+class Queue {
+    QueueNode* frontNode;   // Pokazivač na prvi element reda
+    QueueNode* backNode;    // Pokazivač na poslednji element reda
+
+public:
+    // Konstruktor reda (inicijalizuje prazan red)
+    Queue() : frontNode(nullptr), backNode(nullptr) {}
+
+    // Proverava da li je red prazan
+    bool empty() const {
+        return frontNode == nullptr;
+    }
+
+    // Uklanja element sa početka reda
+    void pop() {
+        if(empty()) return;
+        QueueNode* temp = frontNode;
+        frontNode = frontNode->next;
+        if(!frontNode) backNode = nullptr; // Ako je red sada prazan, postavi backNode na nullptr
+        delete temp;
+    }
+
+    // Dodaje element na kraj reda
+    void push(TreeNode* t) {
+        QueueNode* newNode = new QueueNode(t);
+        if(backNode) {
+            backNode->next = newNode;
+        }
+        else {
+            frontNode = newNode;
+        }
+        backNode = newNode;
+    }
+
+    // Vraća element sa početka reda bez uklanjanja
+    TreeNode* front() const {
+        if(empty()) return nullptr;
+        return frontNode->treeNode;
+    }
+};
+
+// Klasa za binarno stablo
+class Tree {
+private:
+    TreeNode* root; // Koren stabla
+
+    // Rekurzivna funkcija za brisanje stabla
+    void deleteTree(TreeNode* node) {
+        if(node == nullptr) {
+            return;
+        }
+        deleteTree(node->left);
+        deleteTree(node->right);
+        delete node;
+    }
+
+public:
+    // Konstruktor stabla (inicijalizuje prazno stablo)
+    Tree() {
+        root = nullptr;
+    }
+
+    // Destruktor stabla (briše sve čvorove)
+    ~Tree() {
+        deleteTree(root);
+    }
+
+    // Funkcija za umetanje čvorova nivo po nivo (level-order)
+    void insertLevelNode() {
+        int val;
+        cout << "Unesite vrednost čvora ili -1 za prekid: ";
+        cin >> val;
+        if(val == -1) {
+            this->root = nullptr;
+            return;
+        }
+        this->root = new TreeNode(val);
+        Queue q;
+        q.push(this->root);
+
+        // Koristimo red za umetanje čvorova nivo po nivo
+        while(!q.empty()){
+            TreeNode* current = q.front();
+            q.pop();
+            cout << "Unesite levog sina od " << current->val << " ili -1 za nullptr\n";
+            cin >> val;
+            if(val != -1) {
+                current->left = new TreeNode(val);
+                q.push(current->left);
+            }
+            cout << "Unesite desnog sina od " << current->val << " ili -1 za nullptr\n";
+            cin >> val;
+            if(val != -1) {
+                current->right = new TreeNode(val);
+                q.push(current->right);
+            }
+        }
+    }
+
+    // Vraća koren stabla
+    TreeNode* getRoot() {
+        return this->root;
+    }
+
+    // Ispisuje stablo
+    void printTree() {
+        printTreeDLC(getRoot(), 0);
+    }
+
+    // Pomoćna funkcija za ispis stabla na razumljiv način
+    void printTreeDLC(TreeNode* node, int depth = 0) {
+        if(node == nullptr) return;
+
+        // Prvo, obradi desno dete (prikazuje se iznad)
+        printTreeDLC(node->right, depth + 1);
+
+        // Ispiši trenutni čvor sa odgovarajućim brojem razmaka
+        cout << string(depth * 4, ' ') << node->val << endl;
+
+        // Zatim, obradi levo dete (prikazuje se ispod)
+        printTreeDLC(node->left, depth + 1);
+    }
+
+};
+
+int main() {
+    Tree tree;
+    cout << "Kreirajte binarno stablo unosom vrednosti čvorova:" << endl; 
+    tree.insertLevelNode();
+    tree.printTree();
+
+    return 0;
+}
