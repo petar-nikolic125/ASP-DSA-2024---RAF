@@ -1,0 +1,30 @@
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* currentNode, TreeNode* targetNode1, TreeNode* targetNode2) {
+        // Ako smo došli do kraja grane (null) ili našli jedan od traženih čvorova (targetNode1 ili targetNode2),
+        // vraćamo trenutni čvor jer smo pronašli potencijalni kandidat za LCA (najniži zajednički predak).
+        if (currentNode == nullptr || currentNode == targetNode1 || currentNode == targetNode2) {
+            return currentNode;
+        }
+        
+        // Pronalazimo LCA u levoj podstablu trenutnog čvora.
+        TreeNode* leftResult = lowestCommonAncestor(currentNode->left, targetNode1, targetNode2);
+        
+        // Pronalazimo LCA u desnoj podstablu trenutnog čvora.
+        TreeNode* rightResult = lowestCommonAncestor(currentNode->right, targetNode1, targetNode2);
+
+        // Ako su oba podstabla (levo i desno) vratila ne-null vrednosti, to znači da je trenutni čvor
+        // LCA jer su targetNode1 i targetNode2 na različitim stranama.
+        if (leftResult != nullptr && rightResult != nullptr) {
+            return currentNode;
+        }
+
+        // Ako je samo jedno podstablo vratilo ne-null vrednost, vraćamo taj rezultat jer sadrži
+        // ili pronađeni čvor ili već pronađeni LCA.
+        if (leftResult != nullptr) {
+            return leftResult; // Ako je rezultat iz levog podstabla validan, vraćamo njega.
+        } else {
+            return rightResult; // U suprotnom, vraćamo rezultat iz desnog podstabla.
+        }
+    }
+};
