@@ -1,0 +1,27 @@
+class Solution {
+public:
+    int kthSmallest(TreeNode* root, int k) {
+        int count = 0;    // Counter for nodes visited
+        int result = -1;  // Variable to store the kth smallest value
+        inOrder(root, k, count, result);
+        return result;
+    }
+
+private:
+    void inOrder(TreeNode* node, int k, int &count, int &result) {
+        if (!node) return;  // Base case: if node is null, return
+
+        // Traverse the left subtree
+        inOrder(node->left, k, count, result);
+
+        // Visit the current node
+        count++;
+        if (count == k) {
+            result = node->val;
+            return;  // Found the kth smallest element, stop recursion
+        }
+
+        // Traverse the right subtree
+        inOrder(node->right, k, count, result);
+    }
+};
