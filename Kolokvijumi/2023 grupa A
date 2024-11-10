@@ -1,1 +1,82 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+class Stack {
+private:
+    int* elementPointer;
+    int maxElements;
+    int topIndex;
+
+public:
+    explicit Stack(int size) {
+        this->maxElements = size;
+        this->topIndex = -1;
+        this->elementPointer = new int[size];
+    }
+
+    ~Stack() {
+        delete[] elementPointer;
+    }
+
+    void push(int value) {
+        if (topIndex < maxElements - 1) {
+            elementPointer[++topIndex] = value;
+        } else {
+            cout << "stack overflow!\n";
+        }
+    }
+
+    void pop() {
+        if (topIndex > -1) {
+            topIndex--;
+        } else {
+            cout << "cannot pop from an empty stack!\n";
+        }
+    }
+
+    int top() {
+        if (topIndex > -1) {
+            return elementPointer[topIndex];
+        } else {
+            cout << "cannot top from an empty stack\n";
+            return -1;
+        }
+    }
+
+    bool empty() {
+        return topIndex == -1;
+    }
+};
+
+int findValidMaxSubstring(string s) {
+    Stack stack(s.size());
+    int maxLength = 0;
+    int lastValidStart = 0;
+
+    for (int i = 0; i < s.size(); i++) {
+        if (s[i] == '(') {
+            stack.push(1);
+        } else if (s[i] == ')') {
+            stack.pop();
+        }
+
+        if (stack.empty()) {
+            maxLength = max(maxLength, i - lastValidStart);
+            lastValidStart = i + 1;
+        }
+    }
+    return maxLength;
+}
+
+int main() {
+    cout << "Insert a string consisting of '(' and ')': \n";
+    string parentheses;
+    cin >> parentheses;
+    cout << "You entered: " << parentheses << "\n";
+    cout << "Maximum valid substring length: " << findValidMaxSubstring(parentheses) << "\n";
+    return 0;
+}
+
 
