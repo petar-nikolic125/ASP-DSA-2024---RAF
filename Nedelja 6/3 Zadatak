@@ -1,0 +1,18 @@
+int maxDistanceBetweenSameElements(const vector<int>& arr) {
+    unordered_map<int, int> firstOccurrence; 
+    int maxDistance = 0; 
+
+    for (int i = 0; i < arr.size(); i++) {
+        int num = arr[i];
+
+        if (firstOccurrence.find(num) == firstOccurrence.end()) {
+            firstOccurrence[num] = i;
+        } else {
+
+            int distance = i - firstOccurrence[num];
+            maxDistance = max(maxDistance, distance);
+        }
+    }
+
+    return maxDistance;
+}
