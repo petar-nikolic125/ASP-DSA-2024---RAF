@@ -1,0 +1,72 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+// Merge function to combine two sorted subarrays
+void merge(vector<int>& arr, int left, int mid, int right) {
+    int len1 = mid - left + 1;  // Length of the left subarray
+    int len2 = right - mid;    // Length of the right subarray
+
+    // Temporary arrays
+    vector<int> leftArr(len1), rightArr(len2);
+
+    for (int i = 0; i < len1; i++) leftArr[i] = arr[left + i];
+    for (int i = 0; i < len2; i++) rightArr[i] = arr[mid + 1 + i];
+
+    int i = 0, j = 0, k = left;
+
+    // Merge the temporary arrays back into the original array
+    while (i < len1 && j < len2) {
+        if (leftArr[i] <= rightArr[j]) {
+            arr[k++] = leftArr[i++];
+        } else {
+            arr[k++] = rightArr[j++];
+        }
+    }
+
+    // Copy any remaining elements from leftArr
+    while (i < len1) {
+        arr[k++] = leftArr[i++];
+    }
+
+    // Copy any remaining elements from rightArr
+    while (j < len2) {
+        arr[k++] = rightArr[j++];
+    }
+}
+
+// Merge Sort function (recursive)
+void mergeSort(vector<int>& arr, int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+
+        // Recursively sort the first and second halves
+        mergeSort(arr, left, mid);
+        mergeSort(arr, mid + 1, right);
+
+        // Merge the two halves
+        merge(arr, left, mid, right);
+    }
+}
+
+// Helper function to print an array
+void printArray(const vector<int>& arr) {
+    for (int num : arr) {
+        cout << num << " ";
+    }
+    cout << endl;
+}
+
+// Main function
+int main() {
+    vector<int> arr = {38, 27, 43, 3, 9, 82, 10};
+    cout << "Original array: ";
+    printArray(arr);
+
+    mergeSort(arr, 0, arr.size() - 1);
+
+    cout << "Sorted array: ";
+    printArray(arr);
+
+    return 0;
+}
